@@ -7,9 +7,11 @@ export class UserController{
         try {
             const request: CreateUserRequest = req.body as CreateUserRequest;
             const response = await UserService.register(request);
-            res.status(200).json(response);
+            res.status(200).json({
+                data: response
+            });
         } catch (e) {
-            
+            next(e);
         }
     }
 }
