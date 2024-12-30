@@ -1,19 +1,24 @@
 import { logger } from "../src/app/logging";
 import { web } from "../src/app/web";
 import supertest from "supertest";
+import { UsersUtil } from "./users-util";
 
 describe("POST /api/users", () => {
+  afterEach( async () => {
+    await UsersUtil.delete();
+  })
+
   it("should create a new user", async () => {
     const response = await supertest(web).post("/api/users").send({
-      username: "Aurora",
-      password: "Leafa",
-      name: "Reff",
+      username: "TestUser",
+      password: "TestUser",
+      name: "TestUser",
     });
 
     logger.debug(response.body);
     expect(response.status).toBe(200);
-    expect(response.body.data.username).toBe("Aurora");
-    expect(response.body.data.name).toBe("Reff");
+    expect(response.body.data.username).toBe("TestUser");
+    expect(response.body.data.name).toBe("TestUser");
   });
 
   it("should reject new user if request is invalid", async () => {
@@ -27,5 +32,5 @@ describe("POST /api/users", () => {
     expect(response.body.errors).toBeDefined;
   });
 
-  it("should reject new user if user already exists", () => {});
+  // it("should reject new user if user already exists", () => {});
 });

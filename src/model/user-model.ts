@@ -17,6 +17,11 @@ export type UpdateUserRequest = {
     name: string,
 }
 
+export type LoginUserRequest = {
+    username: string,
+    password: string,
+}
+
 export const toUserResponse = (user: User): UserResponse => {
     return {
         name : user.name,

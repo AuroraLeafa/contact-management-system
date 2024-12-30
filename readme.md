@@ -10,3 +10,4 @@ Dependencies :
 - Backend : Typescript/Express.JS
 - DB : MySQL
 - Validation : Zod
+
