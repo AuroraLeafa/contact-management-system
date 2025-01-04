@@ -43,7 +43,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new ResponseError(400, "Username or Password is incorrect");
+      throw new ResponseError(401, "Username or Password is incorrect");
     }
 
     const isPasswordValid = bcrypt.compareSync(
@@ -52,7 +52,7 @@ export class UserService {
     );
     
     if (!isPasswordValid) {
-      throw new ResponseError(400, "Username or Password is incorrect");
+      throw new ResponseError(401, "Username or Password is incorrect");
     }
 
     user = await prismaClient.user.update({

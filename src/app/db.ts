@@ -26,13 +26,13 @@ prismaClient.$on("error", (e) => {
     logger.error(e);
 })
 prismaClient.$on("query", (e) => {
-    logger.error(e);
+    logger.warn(e);
 })
 prismaClient.$on("info", (e) => {
-    logger.error(e);
+    logger.info(e);
 })
 prismaClient.$on("warn", (e) => {
-    logger.error(e);
+    logger.info(e);
 })
 
 
