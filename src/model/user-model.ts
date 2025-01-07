@@ -13,14 +13,16 @@ export type CreateUserRequest = {
 }
 
 export type UpdateUserRequest = {
-    username: string,
-    name: string,
+    name?: string,
+    password?: string
 }
 
 export type LoginUserRequest = {
     username: string,
     password: string,
 }
+
+
 
 export const toUserResponse = (user: User): UserResponse => {
     return {
