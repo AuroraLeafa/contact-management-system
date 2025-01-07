@@ -17,6 +17,7 @@ export class UsersUtil {
                 username:"TestUser",
                 password:bcrypt.hashSync("TestUser", 10),
                 name:"TestUser",
+                token:"token"
             }
         })
     }
