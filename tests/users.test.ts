@@ -1,7 +1,9 @@
+import bcrypt  from 'bcrypt';
 import { logger } from "../src/app/logging";
 import { web } from "../src/app/web";
 import supertest from "supertest";
 import { UsersUtil } from "./users-util";
+import { response } from 'express';
 
 describe("POST /api/users", () => {
   afterEach(async () => {
@@ -118,6 +120,7 @@ describe("PATCH /api/users/current", () => {
   afterEach(async () => {
     await UsersUtil.delete();
   });
+
   it("Should reject update current user (INVALID)", async () => {
     const response = await supertest(web)
       .patch("/api/users/current")
@@ -131,4 +134,63 @@ describe("PATCH /api/users/current", () => {
       expect(response.status).toBe(400);
       expect(response.body.errors).toBeDefined();
   });
+
+  it("Should be able to update current user name", async () => {
+    const response = await supertest(web)
+      .patch("/api/users/current")
+      .set("X-API-TOKEN", "token")
+      .send({
+        name: "Ubah Nama",
+      })
+      logger.debug(response.body);
+      console.log(response.body)
+      expect(response.status).toBe(200);
+      expect(response.body.data.name).toBe("Ubah Nama");
+  });
+
+  it("Should be able to update current user password", async () => {
+    const response = await supertest(web)
+      .patch("/api/users/current")
+      .set("X-API-TOKEN", "token")
+      .send({
+        password: "Password Baru",
+      })
+      logger.debug(response.body);
+      expect(response.status).toBe(200);
+
+      const userPassword = await UsersUtil.get()
+      expect(bcrypt.compareSync("Password Baru", userPassword.password)).toBe(true);
+  });
+});
+
+describe("DELETE /api/users/current", () => {
+  beforeEach(async () => {
+    await UsersUtil.create();
+  });
+  afterEach(async () => {
+    await UsersUtil.delete();
+  });
+
+  it("Should be able to logout current user", async () => {
+    const response = await supertest(web)
+      .delete("/api/users/current")
+      .set("X-API-TOKEN", "token");
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200);
+    expect(response.body.data).toBe("OK");
+
+    const user = await UsersUtil.get()
+    expect(user.token).toBe(null);
+  })
+
+  it("Should be reject to logout current user if token is invalid", async () => {
+    const response = await supertest(web)
+      .delete("/api/users/current")
+      .set("X-API-TOKEN", "token salah");
+
+    logger.debug(response.body)
+    expect(response.status).toBe(401);
+    expect(response.body.errors).toBeDefined();
+  })
 });
