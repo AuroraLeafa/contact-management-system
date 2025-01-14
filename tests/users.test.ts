@@ -28,8 +28,9 @@ describe("POST /api/users", () => {
       name: "",
     });
 
+    console.log(response.body)
     expect(response.status).toBe(400);
-    expect(response.body.errors).toBeDefined;
+    expect(response.body.errors).toBeDefined();
   });
 
   // it("should reject new user if user already exists", () => {});
@@ -53,7 +54,7 @@ describe("LOGIN /api/users/login", () => {
     expect(response.status).toBe(200);
     expect(response.body.data.username).toBe("TestUser");
     expect(response.body.data.name).toBe("TestUser");
-    expect(response.body.data.token).toBeDefined;
+    expect(response.body.data.token).toBeDefined();
   });
 
   it("Should reject login if user not found/wrong", async () => {
@@ -62,8 +63,9 @@ describe("LOGIN /api/users/login", () => {
       password: "TestUser",
     });
     logger.debug(response.body);
+    console.log(response.body)
     expect(response.status).toBe(401);
-    expect(response.body.errors).toBeDefined;
+    expect(response.body.errors).toBeDefined();
   });
 
   it("should reject login user if username/password is wrong", async () => {
@@ -72,8 +74,9 @@ describe("LOGIN /api/users/login", () => {
       password: "Salah",
     });
     logger.debug(response.body);
+    console.log(response.body)
     expect(response.status).toBe(401);
-    expect(response.body.errors).toBeDefined;
+    expect(response.body.errors).toBeDefined();
   });
 });
 
@@ -91,19 +94,41 @@ describe("GET /api/users/current", () => {
       .get("/api/users/current")
       .set("X-API-TOKEN", "token");
 
-      logger.debug(response.body);
-      expect(response.status).toBe(200);
-      expect(response.body.data.username).toBe("TestUser");
-      expect(response.body.data.name).toBe("TestUser");
-  })
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.username).toBe("TestUser");
+    expect(response.body.data.name).toBe("TestUser");
+  });
 
   it("Should not be able to get current user if token is invalid", async () => {
     const response = await supertest(web)
       .get("/api/users/current")
       .set("X-API-TOKEN", "Test");
 
+    logger.debug(response.body);
+    expect(response.status).toBe(401);
+    expect(response.body.errors).toBe("Unauthorized");
+  });
+});
+
+describe("PATCH /api/users/current", () => {
+  beforeEach(async () => {
+    await UsersUtil.create();
+  });
+  afterEach(async () => {
+    await UsersUtil.delete();
+  });
+  it("Should reject update current user (INVALID)", async () => {
+    const response = await supertest(web)
+      .patch("/api/users/current")
+      .set("X-API-TOKEN", "token")
+      .send({
+        password: "",
+        name: "",
+      })
       logger.debug(response.body);
-      expect(response.status).toBe(401);
-      expect(response.body.errors).toBe("Unauthorized");
-  })
-})
+      console.log(response.body)
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toBeDefined();
+  });
+});

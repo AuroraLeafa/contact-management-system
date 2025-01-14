@@ -10,15 +10,15 @@ export const errorMiddleware = async (
 ) => {
   if (error instanceof ZodError) {
     res.status(400).json({
-      error: `Validation Error: ${JSON.stringify(error)}`,
+      errors: `Validation Error: ${JSON.stringify(error)}`,
     });
   } else if (error instanceof ResponseError) {
     res.status(error.status).json({
-      error: error.message,
+      errors: error.message,
     });
   } else {
     res.status(500).json({
-      error: error.message,
+      errors: error.message,
     });
   }
 };

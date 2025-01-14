@@ -15,8 +15,8 @@ export class UsersUtil {
         await prismaClient.user.create({
             data:{
                 username:"TestUser",
-                password:bcrypt.hashSync("TestUser", 10),
                 name:"TestUser",
+                password:bcrypt.hashSync("TestUser", 10),
                 token:"token"
             }
         })
